@@ -53,7 +53,6 @@ def main():
     # the optimal value is f* = 0 at x* = 0.
     f_star = 0.0
     eps_gap = 1e-12
-
     xs = range(1, max_iter + 1)
 
     plt.figure(figsize=(9, 6))
@@ -81,26 +80,6 @@ def main():
     plt.tight_layout()
     plt.savefig("plots/cost_gap.png", dpi=250)
     print("Saved plots/cost_gap.png")
-
-    plt.figure(figsize=(9, 5))
-    plt.plot(xs, result.descent_fractions, label="descent fraction")
-    plt.plot(xs, result.null_fractions, label="null fraction")
-    plt.xlabel("Iteration")
-    plt.ylabel("Fraction")
-    plt.title("Step Type Fractions")
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig("plots/step_fractions.png", dpi=250)
-    print("Saved plots/step_fractions.png")
-
-    plt.figure(figsize=(9, 4))
-    plt.semilogy(xs, result.selected_rhos)
-    plt.xlabel("Iteration")
-    plt.ylabel("Selected rho")
-    plt.title("Selected rho over time")
-    plt.tight_layout()
-    plt.savefig("plots/selected_rho.png", dpi=250)
-    print("Saved plots/selected_rho.png")
 
 
 if __name__ == "__main__":
