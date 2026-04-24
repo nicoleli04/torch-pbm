@@ -8,7 +8,7 @@ This repository provides a GPU-compatible, batched implementation of PBM and its
 
 ## Features
 
-- Parallel multi-stepsize PBM (Alg2-style)
+- Parallel multi-stepsize PBM 
 - Two-cut proximal bundle model
 - Batched PyTorch implementation
 - GPU acceleration support
@@ -31,21 +31,25 @@ pip install -e .
 ---
 
 ## Quick Start 
-
+```
 import torch
 from torch_pbm import ParallelPBM, QuadraticOracle
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+```
 
-# Problem setup
+## Problem setup
+```
 d = 1000
 Q = torch.randn(d, d, device=device)
 Q = Q.T @ Q  # make PSD
 x0 = torch.randn(d, device=device)
 
 oracle = QuadraticOracle(Q)
+```
 
-# Solver
+## Solver
+```
 solver = ParallelPBM(
     rho_bar=15.0,
     num_instances=5,
@@ -56,24 +60,24 @@ solver = ParallelPBM(
 result = solver.solve(x0, oracle, max_iter=1000)
 
 print("Final objective:", result.best_values[-1])
-
+```
 ---
 
 ## Method Overview
 
 We solve problems of the form:
 
-[
+$
 \min_x f(x)
-]
+$
 
 where ( f ) is convex and possibly nonsmooth.
 
 PBM builds a piecewise linear model of ( f ) using subgradients and solves:
 
-[
+$$
 \min_y \max_i { f_i + \langle v_i, y - z_i \rangle } + \frac{\rho}{2} |y - x_k|^2
-]
+$$
 
 This implementation uses a two-cut approximation, enabling an efficient closed-form solution.
 
@@ -84,9 +88,9 @@ This implementation uses a two-cut approximation, enabling an efficient closed-f
 
 We run multiple instances with different proximal parameters:
 
-[
+$$
 \rho_j = \rho_{\text{bar}} \cdot 2^j
-]
+$$
 
 At each iteration:
 	•	All instances propose candidates
@@ -99,17 +103,17 @@ At each iteration:
 
 Quadratic
 
-[
+$$
 f(x) = \frac{1}{2} x^T Q x
-]
+$$
 
 Quadratic + L1
 
-[
+$$
 f(x) = \frac{1}{2} x^T Q x + \lambda |x|_1
-]
+$$
 
-Where ( Q = A^T A ), ensuring convexity.
+Where $( Q = A^T A )$, ensuring convexity.
 
 ---
 
